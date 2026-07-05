@@ -22,7 +22,7 @@ def fetch_latest_record():
     # Sort records by Timestamp in descending order and limit to 1
     params = {
         'maxRecords': 1,
-        'sort[0][field]': 'Timestamp',   # Assuming there's a 'Timestamp' field
+        'sort[0][field]': 'Timestamp',
         'sort[0][direction]': 'desc'
     }
 
@@ -42,53 +42,39 @@ def format_chart_note(record):
     Format a single Airtable record into a chart note.
     """
     fields = record.get('fields', {})
-    
+
     chart_note = f"""
     Patient Information
-    - Name: {fields.get('Patient_First', '')} {fields.get('Last_Name', '')}
-    - Chart Number: {fields.get('Chart_Number', '')}
-    - Provider: {fields.get('Provider', '')}
-    - Timestamp: {fields.get('Timestamp', '')}
+    - Name: {fields.get('First Name', 'N/A')} {fields.get('Last Name', 'N/A')}
+    - Chart Number: {fields.get('Chart_Number', 'N/A')}
+    - Provider: {fields.get('Provider', 'N/A')}
+    - Timestamp: {fields.get('Timestamp', 'N/A')}
 
-    Chief Complaint
-    - {fields.get('Chief_Complaint_PROBLEM', '')}
+    Chief Complaint: {fields.get('Chief_Complaint_PROBLEM', 'N/A')}
 
-    Diagnoses
-    1. Primary Diagnosis: {fields.get('1st_DX', '')}
-        - {fields.get('1_DX_Comment', '')}
+    Diagnoses:
+    1. Primary Diagnosis: {fields.get('1st_DX', 'N/A')}
+       Comment: {fields.get('1_DX_Comment', 'N/A')}
+
+    2. Secondary Diagnosis: {fields.get('2nd_DX_if_Applicable', 'N/A')}
+       Comment: {fields.get('2_DX_Comment', 'N/A')}
+
+    Etiology Analysis: {fields.get('Etiology_ANALYZE', 'N/A')}
+
+    Treatment Offered: {fields.get('TREATMENT_Offered', 'N/A')}
+
+    Patient Consent: {fields.get('What_the_Patient_CONSENTed_To', 'N/A')}
+
+    Treatment Plan:
+    Short Term (Today to 3 months): {fields.get('Patient_Treatment_ST_Todat_3mo', 'N/A')}
+    Medium Term (3 months to 1 year): {fields.get('Patient_Treatment_MT_3mo-1year', 'N/A')}
+    Long Term (Over 1 year): {fields.get('Patient_Treatment_LT_over_1year', 'N/A')}
+
+    Prognosis and Patient Expectations: {fields.get('Prognosis_To_Patient_Expectations', 'N/A')}
+
+    Education Provided: {fields.get('Education', 'N/A')}
     """
 
-    # Handle optional second diagnosis
-    second_dx = fields.get('2nd_DX_if_Applicable', '')
-    if second_dx:
-        chart_note += f"""
-    2. Secondary Diagnosis: {second_dx}
-        - {fields.get('2_DX_Comment', '')}
-    """
-
-    chart_note += f"""
-    Etiology Analysis
-    - {fields.get('Etiology_ANALYZE', '')}
-
-    Treatment Offered
-    - {fields.get('TREATMENT_Offered', '')}
-
-    Patient Consent
-    - {fields.get('What_the_Patient_CONSENTed_To', '')}
-
-    Treatment Plan
-    - Short Term (Today to 3 months): {fields.get('Patient_Treatment_ST_Todat_3mo', '')}
-    - Medium Term (3 months to 1 year): {fields.get('Patient_Treatment_MT_3mo-1year', '')}
-    - Long Term (Over 1 year): {fields.get('Patient_Treatment_LT_over_1year', '')}
-
-    Prognosis and Patient Expectations
-    - {fields.get('Prognosis_To_Patient_Expectations', '')}
-
-    Education Provided
-    - {fields.get('Education', '')}
-
-    ---
-    """
     return chart_note.strip()
 
 def main():
